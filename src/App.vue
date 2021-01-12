@@ -1,23 +1,22 @@
 <template>
-  <div>
-    <Register />
+  <div id="app">
+    <div id="nav">
+      <router-link :to="{name: 'list'}">Lista</router-link>
+      <router-link :to="{name: 'register'}">Cadastro</router-link>
+    </div>
+    <router-view />
   </div>
 </template>
-
 <script>
-import Register from './components/Register.vue'
-
 export default {
-  name: 'App',
-  components: {
-    Register,
+  data(){
+    return {
+      age: 1
+    }
   }
 }
 </script>
+<style lang="scss">
 
-<style>
-* {
-  margin: 0;
-  padding: 0;
-}
+
 </style>

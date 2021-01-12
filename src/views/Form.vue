@@ -1,38 +1,37 @@
 <template>
   <div class="register">
-    <header>
-      <button>Lista</button>
-      <button>Cadastro</button>
-    </header>
-    <h1 class="a">Cadastro</h1>
+    <h1 class="">Cadastro</h1>
     <div class="container">
       <label class="label">Nome</label>
-      <input class="input" type="text" />
+      <input v-model="name" class="input" type="text" />
+      <p v-if="name.length < 10 && name.length > 2">Nome deve ter no mínimo 10 caracteres</p>
       <label class="label">Email</label>
-      <input class="input" type="text" />
+      <input  v-model="email" class="input" type="text" />
+      <p v-if="email.length < 10 && email.length > 2">Digite um email válido</p>
       <label class="label">CPF</label>
       <input class="input" type="number" placeholder="111.111.111-01" />
 
-      <div class="j">
-        <div>
-          <label class="">Endereço</label>
+      <div style="display:flex">
+        <div class="hj">
+          <label >Endereço</label>
           <input type="text" class="" placeholder="Rua, Número e Bairro" />
         </div>
-        <div>
         <label class="">Estado</label>
-        <select class="">
+        <div class="hj">
+        <select  v-model="UF" class="">
           <option disabled selected hidden>Selecione o Estado</option>
-          <option v-for="state in BrazilState" :key="state">{{ state }}</option>
+          <option v-for="state in BrazilState" :key="state.id">{{ state.sigla }}</option>
         </select>
         </div>
       </div>
-      <label class="label">CEP</label>
+
+      <label class="">CEP</label>
       <input type="number" class="" placeholder="22.222-000" />
       <label>Cidade</label>
       <select class="">
         <option disabled selected hidden>Selecione a Cidade</option>
-        <option v-for="capital in stateCapitals" :key="capital">
-          {{ capital }}
+        <option v-for="district in districts" :key="district.id">
+          {{ district.nome }}
         </option>
       </select>
  
@@ -40,7 +39,7 @@
         <hr>
         <input type="radio" >
         <label>Cartão de Crédito</label>
-        <input type="radio" >
+        <input  type="radio" >
         <label>Boleto Bancário</label>
 
         <label>Nome no Cartão</label>
@@ -69,43 +68,78 @@
       </div>
 
     </div>
-    <Footer />
+    <!-- <Footer /> -->
   </div>
 </template>
 
 <script>
-import Footer from './Footer.vue'
+// import Footer from './Footer.vue'
+import axios from 'axios';
+
+
 
 export default {
   name: "Register",
   data() {
     return {
-      BrazilState: ["Minas Gerais", "São Paulo", "Rio de Janeiro", "Paraná"],
-      stateCapitals: ["São Paulo", "Belo Horizonte", "Rio de Janeiro"],
+      BrazilState: [],
+      UF: "",
+      districts: [],
+      name: "",
+      email: "",
+      cpf: 0,
+      street: "",
     };
   },
-  methods: {},
+  methods: {
+    // submit(){
+    //   const name = this.name;
+    // chama aqui a request para city
+    // }
+  },
   components: {
-    Footer
+    // Footer
+  },
+  // computed: {
+  //   validName() {
+  //     if (this.name.length < 10 && this.name.length > 1) {
+  //       return  "Nome pequeno"
+  //     }
+  //     return ""
+  //   }
+  // }
+  created(){
+    axios.get("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+    .then(({data}) => this.BrazilState = data)
+    .catch(err => console.error(err));
+    
+  },
+  updated(){
+    axios.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${this.UF}/distritos`)
+    .then(({data}) => this.districts = data)
+    .catch(err => console.error(err));
   }
 };
+
+
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .container {
   margin: 2em auto;
   width: 65%;
+  .label {
+    display: flex;
+  }
 }
 
+.hj {
+  display:flex;
+  flex-direction:column
+}
 .input {
   height: 2rem;
   width: 90%;
-
-}
-
-.label {
-  /* background: green; */
-  display: flex;
 }
 
 .a {
@@ -114,7 +148,5 @@ export default {
   margin-left: 15%;
 }
 
-.j {
-  display: flex;
-}
+
 </style>
