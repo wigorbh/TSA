@@ -68,13 +68,13 @@
       </div>
 
     </div>
-    <!-- <Footer /> -->
+    <Footer />
   </div>
 </template>
 
 <script>
-// import Footer from './Footer.vue'
 import axios from 'axios';
+import Footer from '../components/Footer';
 
 
 
@@ -98,7 +98,7 @@ export default {
     // }
   },
   components: {
-    // Footer
+    Footer
   },
   // computed: {
   //   validName() {
