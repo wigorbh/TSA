@@ -1,12 +1,13 @@
 <template>
   <div>
+    <div class="title">
+      <h1 class="title-align">Lista</h1>
+    </div>
     <div class="container">
-      <h1>Lista</h1>
       <p class="title-blue">Lista de Clientes</p>
       <hr />
-      <p>Nome do Cliente</p>
-      <input class="input" type="text" />
-
+      <label class="label" for="name">Nome do Cliente</label >
+      <input id="name" class="input-style position-full" type="text" />
       <table class="table">
         <tr>
           <th>Nome</th>
@@ -59,8 +60,7 @@ export default {
 .table {
   border: solid black 1px;
   margin-top: 1rem;
+  text-align: center;
   width: 100%;
 }
-
-
 </style>

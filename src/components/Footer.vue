@@ -23,4 +23,5 @@ export default {
   position: fixed;
   width:100%;
 }
+
 </style>
