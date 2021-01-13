@@ -131,7 +131,7 @@
       <br>
       <hr />
       <div>
-        <p>Seu cartão será debitado em R$ 49,00</p>
+        <p class="label">Seu cartão será debitado em R$ 49,00</p>
         <button class="button-submit">REALIZAR MATRÍCULA</button>
         <p>Informações seguras e criptografadas</p>
       </div>
