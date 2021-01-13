@@ -6,13 +6,11 @@
     <form action="" v-on:submit.prevent="checkForm" class="container">
       <label class="label">Nome</label>
       <input v-model="name" class="input" type="text" />
-      <!-- <p v-if="name.length < 10 && name.length > 2"> -->
-        <!-- Nome deve ter no mínimo 10 caracteres -->
-      <!-- </p> -->
-
+      <p class="warning" v-if="name.length < 10 && name.length > 2">Digite o nome completo</p>
+      
       <label class="label">Email</label>
       <input v-model="email" class="input" type="text" />
-      <!-- <p v-if="email">Digite um email válido</p> -->
+      <p class="warning" v-if="email.length < 10 && email.length > 2">email no formato exemplo@email.com</p>
 
       <label class="label">CPF</label>
       <input
@@ -21,7 +19,7 @@
         type="number"
         placeholder="111.111.111-01"
       />
-      <p v-if="cpf.length < 10 && cpf.length > 2">CPF com 11 digitos</p>
+      <p class="warning" v-if="cpf.length < 10 && cpf.length > 2">CPF com 11 digitos</p>
 
       <div class="flex">
         <div class="input-row">
@@ -32,6 +30,7 @@
             type="text"
             placeholder="Rua, Número e Bairro"
           />
+        <p class="warning" v-if="street.length < 10 && street.length > 2">Digite endereço completo</p>
         </div>
         <div class="input-row">
           <label class="">Estado</label>
@@ -52,6 +51,7 @@
             class="input"
             placeholder="22.222-000"
           />
+          <p class="warning" v-if="cep.length < 10 && cep.length > 2">mínimo 8 digitos</p>
         </div>
         <div class="input-row">
           <label>Cidade</label>
@@ -114,10 +114,10 @@
         <button class="button-submit">REALIZAR MATRÍCULA</button>
         <p>Informações seguras e criptografadas</p>
       </div>
+      <ul>
+        <li v-for="error in errors" :key="error">{{ error }}</li>
+      </ul>
     </form>
-    <ul>
-      <li v-for="error in errors" :key="error"> {{error}}</li>
-    </ul>
     <Footer />
   </div>
 </template>
@@ -159,9 +159,9 @@ export default {
         "2029",
         "2030",
       ],
-      name: null,
-      email: null,
-      cpf: 0,
+      name: "",
+      email: "",
+      cpf: "",
       street: "",
       UF: "",
       cep: "",
@@ -173,26 +173,34 @@ export default {
   methods: {
     checkForm() {
       this.errors = [];
-
+         // Ref. Regex email obtida em https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
       // const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-      if (!this.name) {
-        this.errors.push("O nome deve ser preenchido");
+      const nameVerify = new RegExp(/^([a-zA-Z\s]){12,100}$/);
+       if (!nameVerify.test(this.name)) {
+         this.errors.push("O nome deve ser preenchido");
       }
+  
+      // const emailVerify = new RegExp(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/);
       if (!this.email) {
         this.errors.push("Digite um email válido");
-      }
+      }   
       if (!this.cpf) {
-        this.errors.push("Digite o Cpf")
+        this.errors.push("Digite o Cpf");
       }
 
-      if (this.name && this.email && this.cpf) {
+      else {
         this.$router.push({
           name: "list",
           params: {
             name: this.name,
             email: this.email,
             cpf: this.cpf,
-            date: new Date(),
+            date: new Date()
+              .toLocaleString()
+              .split(/\D/)
+              .slice(0, 3)
+              .map((num) => num.padStart(2, "0"))
+              .join("/"),
           },
         });
         alert("Cadastrado com sucesso");
@@ -219,7 +227,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" >
 .container {
   margin: 2em auto;
   width: 50%;
@@ -246,7 +254,7 @@ export default {
 
 .input {
   height: 2rem;
-  width: 97%;
+  width: 100%;
 }
 
 .title-blue {
@@ -263,9 +271,9 @@ export default {
   width: 45%;
 }
 
-.button-submit:active {
-  box-shadow: rgb(23, 156, 14) 2px 2px;
-}
+// .button-submit:active {
+//   box-shadow: rgb(23, 156, 14) 2px 2px;
+// }
 
 .title-register {
   background: #eff4f9;
@@ -274,5 +282,17 @@ export default {
 }
 .title-align {
   text-align: center;
+}
+
+.warning {
+  color: #ff0000;
+  font-size: 15px;
+}
+
+@media screen and (max-width: 600px) {
+  .container {
+    margin: 1em auto;
+    width: 90%;
+  }
 }
 </style>

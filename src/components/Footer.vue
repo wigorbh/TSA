@@ -11,12 +11,16 @@ export default {
 </script>
 
 <style scoped>
-.footer {
-  background: #1188ee;
-  height: 4.5rem;
-}
 .author {
   color: #fff;
   padding: 25px;
+}
+
+.footer {
+  background: #1188ee;
+  bottom:0;
+  height: 4.5rem;
+  position: fixed;
+  width:100%;
 }
 </style>
