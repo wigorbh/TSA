@@ -3,25 +3,35 @@
     <div class="title-register">
       <h1 class="title-align">Cadastro</h1>
     </div>
-    <div class="container">
+    <form action="" v-on:submit.prevent="checkForm" class="container">
       <label class="label">Nome</label>
       <input v-model="name" class="input" type="text" />
-      <p v-if="name.length < 10 && name.length > 2">
-        Nome deve ter no mínimo 10 caracteres
-      </p>
+      <!-- <p v-if="name.length < 10 && name.length > 2"> -->
+        <!-- Nome deve ter no mínimo 10 caracteres -->
+      <!-- </p> -->
 
       <label class="label">Email</label>
       <input v-model="email" class="input" type="text" />
-      <p v-if="email.length < 10 && email.length > 2">Digite um email válido</p>
+      <!-- <p v-if="email">Digite um email válido</p> -->
 
       <label class="label">CPF</label>
-      <input class="input" type="number" placeholder="111.111.111-01" />
+      <input
+        v-model="cpf"
+        class="input"
+        type="number"
+        placeholder="111.111.111-01"
+      />
       <p v-if="cpf.length < 10 && cpf.length > 2">CPF com 11 digitos</p>
 
       <div class="flex">
         <div class="input-row">
           <label>Endereço</label>
-          <input class="input" type="text" placeholder="Rua, Número e Bairro" />
+          <input
+            v-model="street"
+            class="input"
+            type="text"
+            placeholder="Rua, Número e Bairro"
+          />
         </div>
         <div class="input-row">
           <label class="">Estado</label>
@@ -36,11 +46,16 @@
       <div class="flex">
         <div class="input-row">
           <label class="">CEP</label>
-          <input type="number" class="input" placeholder="22.222-000" />
+          <input
+            v-model="cep"
+            type="number"
+            class="input"
+            placeholder="22.222-000"
+          />
         </div>
         <div class="input-row">
           <label>Cidade</label>
-          <select class="input-select">
+          <select v-model="city" class="input-select">
             <option disabled selected hidden>Selecione a Cidade</option>
             <option v-for="district in districts" :key="district.id">
               {{ district.nome }}
@@ -60,21 +75,25 @@
       <div class="flex">
         <div class="input-row">
           <label>Nome no Cartão</label>
-          <input type="text" class="input" placeholder="Nome impresso no cartão" />
+          <input
+            type="text"
+            class="input"
+            placeholder="Nome impresso no cartão"
+          />
         </div>
         <div class="input-row">
           <label>Data de Expiração</label>
           <div class="flex">
-          <select class="input-select">
-            <option disabled selected hidden>Mês</option>
-            <option v-for="mounth in mounths" :key="mounth">
-              {{ mounth }}
-            </option>
-          </select>
-          <select class="input-select">
-            <option disabled selected hidden>Ano</option>
-            <option v-for="year in years" :key="year">{{ year }}</option>
-          </select>
+            <select class="input-select">
+              <option disabled selected hidden>Mês</option>
+              <option v-for="mounth in mounths" :key="mounth">
+                {{ mounth }}
+              </option>
+            </select>
+            <select class="input-select">
+              <option disabled selected hidden>Ano</option>
+              <option v-for="year in years" :key="year">{{ year }}</option>
+            </select>
           </div>
         </div>
       </div>
@@ -92,10 +111,13 @@
       <hr />
       <div>
         <p>Seu cartão será debitado em R$ 49,00</p>
-        <button @click="share"  class="button-submit">REALIZAR MATRÍCULA</button>
+        <button class="button-submit">REALIZAR MATRÍCULA</button>
         <p>Informações seguras e criptografadas</p>
       </div>
-    </div>
+    </form>
+    <ul>
+      <li v-for="error in errors" :key="error"> {{error}}</li>
+    </ul>
     <Footer />
   </div>
 </template>
@@ -109,7 +131,7 @@ export default {
   data() {
     return {
       BrazilState: [],
-      UF: "",
+
       districts: [],
       mounths: [
         "Janeiro",
@@ -137,32 +159,45 @@ export default {
         "2029",
         "2030",
       ],
-      name: "deu certo",
-      email: "",
+      name: null,
+      email: null,
       cpf: 0,
       street: "",
+      UF: "",
+      cep: "",
+      city: "",
+      date: "",
+      errors: [],
     };
   },
   methods: {
-    submitForm() {
-      const name = this.name;
-      const email = this.email;
-      const cpf = this.cpf;
-      const street = this.street;
+    checkForm() {
+      this.errors = [];
 
-      const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      // const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      if (!this.name) {
+        this.errors.push("O nome deve ser preenchido");
+      }
+      if (!this.email) {
+        this.errors.push("Digite um email válido");
+      }
+      if (!this.cpf) {
+        this.errors.push("Digite o Cpf")
+      }
 
-      if (!name) return false;
-      if (regex.test(email)) return true;
-      if (!cpf) return false;
-
-      if (name && email && cpf && street) {
-        return; // enviar para o back-end;
+      if (this.name && this.email && this.cpf) {
+        this.$router.push({
+          name: "list",
+          params: {
+            name: this.name,
+            email: this.email,
+            cpf: this.cpf,
+            date: new Date(),
+          },
+        });
+        alert("Cadastrado com sucesso");
       }
     },
-    share(){
-      this.$router.push({ name: "list", params: {data: this.name}});
-    }
   },
   components: {
     Footer,
@@ -233,12 +268,11 @@ export default {
 }
 
 .title-register {
-  background: #EFF4F9;
+  background: #eff4f9;
   height: 6rem;
   // margin-left: 15%;
 }
 .title-align {
   text-align: center;
-
 }
 </style>
