@@ -1,6 +1,8 @@
 <template>
   <div class="register">
-    <h1 class="">Cadastro</h1>
+    <div class="title-register">
+      <h1 class="title-align">Cadastro</h1>
+    </div>
     <div class="container">
       <label class="label">Nome</label>
       <input v-model="name" class="input" type="text" />
@@ -90,7 +92,7 @@
       <hr />
       <div>
         <p>Seu cartão será debitado em R$ 49,00</p>
-        <button class="button-submit">REALIZAR MATRÍCULA</button>
+        <button @click="share"  class="button-submit">REALIZAR MATRÍCULA</button>
         <p>Informações seguras e criptografadas</p>
       </div>
     </div>
@@ -135,7 +137,7 @@ export default {
         "2029",
         "2030",
       ],
-      name: "",
+      name: "deu certo",
       email: "",
       cpf: 0,
       street: "",
@@ -158,6 +160,9 @@ export default {
         return; // enviar para o back-end;
       }
     },
+    share(){
+      this.$router.push({ name: "list", params: {data: this.name}});
+    }
   },
   components: {
     Footer,
@@ -227,9 +232,13 @@ export default {
   box-shadow: rgb(23, 156, 14) 2px 2px;
 }
 
-// .a {
-//   background: #dde0e2;
-//   height: 4.5rem;
-//   margin-left: 15%;
-// }
+.title-register {
+  background: #EFF4F9;
+  height: 6rem;
+  // margin-left: 15%;
+}
+.title-align {
+  text-align: center;
+
+}
 </style>
